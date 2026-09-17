@@ -1,0 +1,29 @@
+/*
+ * Prixtara Global Styles
+ *
+ * Tailwind CSS v4 — imported via @import directive.
+ * Configuration via @theme directive (no tailwind.config.ts in v4).
+ *
+ * ARCHITECTURE PHASE — minimal reset only.
+ *
+ * TODO(design): Add @theme block with design tokens:
+ *   - Brand colour palette
+ *   - Typography scale
+ *   - Spacing scale overrides
+ *   - Custom keyframes for GSAP / Motion integration
+ * TODO(design): Add base typography styles
+ * TODO(design): Add font-face declarations for custom typefaces
+ */
+
+@import 'tailwindcss';
+
+/*
+ * TODO(design): Define the design system @theme here.
+ *
+ * Example (do NOT add yet — awaiting design phase):
+ *
+ * @theme {
+ *   --color-brand-primary: oklch(0.65 0.22 260);
+ *   --font-sans: 'Inter Variable', system-ui, sans-serif;
+ * }
+ */

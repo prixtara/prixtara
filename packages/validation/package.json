@@ -1,0 +1,22 @@
+{
+  "name": "@prixtara/validation",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Zod validation schemas for all external boundaries",
+  "license": "UNLICENSED",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/ --max-warnings 0"
+  },
+  "dependencies": {
+    "@prixtara/types": "workspace:*",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@prixtara/tsconfig": "workspace:*",
+    "typescript": "^5.8.3"
+  }
+}

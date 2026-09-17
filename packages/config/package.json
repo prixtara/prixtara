@@ -1,0 +1,25 @@
+{
+  "name": "@prixtara/config",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Runtime configuration — validated env vars with server/client isolation",
+  "license": "UNLICENSED",
+  "exports": {
+    ".": "./src/index.ts",
+    "./server": "./src/env.server.ts",
+    "./client": "./src/env.client.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/ --max-warnings 0"
+  },
+  "dependencies": {
+    "@prixtara/validation": "workspace:*",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@prixtara/tsconfig": "workspace:*",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.3"
+  }
+}

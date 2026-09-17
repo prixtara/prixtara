@@ -1,0 +1,11 @@
+node_modules
+.next
+dist
+build
+.sanity
+.turbo
+coverage
+playwright-report
+*.lock
+pnpm-lock.yaml
+CHANGELOG.md
