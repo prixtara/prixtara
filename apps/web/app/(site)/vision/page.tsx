@@ -1,30 +1,31 @@
 import type { Metadata } from 'next';
+import { getPageBySlug } from '@/lib/server';
+import { buildPageMetadata } from '@/lib/server/seo';
 
 /**
  * Vision page — /vision
  *
- * Prixtara's mission, philosophy, and technology vision.
- *
- * TODO(cms): Fetch vision page content from Sanity page document.
- * TODO(design): Implement full vision page layout.
- * TODO(seo): Add metadata with vision-specific copy.
+ * Architecture:
+ *   - Fetches marketing copy through PageRepository.
+ *   - Caching: Static generation (SSG).
+ *   - Visual freeze: semantic HTML placeholder shell only.
  */
-export const metadata: Metadata = {
-  title: 'Our Vision',
-  description: 'The technology vision and mission behind Prixtara Technologies.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageBySlug('vision');
+  return buildPageMetadata(page, 'vision');
+}
 
 export default async function VisionPage() {
-  // TODO(cms): const page = await getPageBySlug('vision');
+  const page = await getPageBySlug('vision');
 
   return (
     <main>
-      <h1>Our Vision</h1>
-      <p>Architecture placeholder — vision content coming from CMS.</p>
-      {/* TODO(design): Vision hero */}
-      {/* TODO(design): Mission statement */}
-      {/* TODO(design): Technology pillars */}
-      {/* TODO(design): Team / leadership section */}
+      <h1>{page?.title ?? 'Our Vision'}</h1>
+      <p>
+        {page?.description ??
+          'Building foundational technologies that elevate industry and human communication.'}
+      </p>
+      {page?.body && <p>{page.body}</p>}
     </main>
   );
 }

@@ -1,22 +1,27 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { getJobOpeningBySlug } from '@/lib/careers';
+import { getJobOpeningBySlug, getAllJobOpeningSlugs } from '@/lib/server';
+import { buildCareerMetadata } from '@/lib/server/seo';
 
 /**
- * Individual career/job page — /career/[slug]
+ * Individual career / job posting page — /career/[slug]
  *
- * TODO(cms): Fetch full job description (PortableText) from Sanity.
- * TODO(careers): Implement application form or link.
- * TODO(design): Job posting layout with requirements and benefits.
- * TODO(careers): Add job application storage backend.
+ * Architecture:
+ *   - CMS-driven dynamic route supporting arbitrary future job postings.
+ *   - dynamicParams = true: allows on-demand ISR rendering for newly published postings.
+ *   - generateStaticParams: pre-builds existing positions at build time.
+ *   - Visual freeze: semantic HTML placeholder shell only.
  */
+
+export const dynamicParams = true;
+
 interface CareerPageProps {
   params: Promise<{ slug: string }>;
 }
 
-// TODO(cms): generateStaticParams when CMS has real data
-export function generateStaticParams(): Array<{ slug: string }> {
-  return [];
+export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
+  const slugs = await getAllJobOpeningSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: CareerPageProps): Promise<Metadata> {
@@ -27,13 +32,10 @@ export async function generateMetadata({ params }: CareerPageProps): Promise<Met
     return { title: 'Position Not Found' };
   }
 
-  return {
-    title: job.title,
-    description: job.summary,
-  };
+  return buildCareerMetadata(job);
 }
 
-export default async function CareerPage({ params }: CareerPageProps) {
+export default async function CareerDetailPage({ params }: CareerPageProps) {
   const { slug } = await params;
   const job = await getJobOpeningBySlug(slug);
 
@@ -43,14 +45,27 @@ export default async function CareerPage({ params }: CareerPageProps) {
 
   return (
     <main>
-      <h1>{job.title}</h1>
-      <p>
-        {job.department} · {job.location}
-      </p>
-      <p>{job.summary}</p>
+      <article>
+        <header>
+          <h1>{job.title}</h1>
+          <p>
+            {job.department} · {job.location} · {job.employmentType}
+            {job.isRemote && ' (Remote Eligible)'}
+          </p>
+        </header>
 
-      {/* TODO(design): Full job description from PortableText */}
-      {/* TODO(careers): Application form or link */}
+        <section aria-label="Role Summary">
+          <h2>Summary</h2>
+          <p>{job.summary}</p>
+        </section>
+
+        {job.description && (
+          <section aria-label="Job Description">
+            <h2>About the Role</h2>
+            <p>{job.description}</p>
+          </section>
+        )}
+      </article>
     </main>
   );
 }

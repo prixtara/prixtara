@@ -2,21 +2,29 @@
   "name": "@prixtara/cms",
   "version": "0.0.1",
   "private": true,
-  "description": "Sanity CMS access layer — all CMS queries must go through this package",
+  "description": "Sanity CMS access layer — all CMS queries, schemas, client, adapters, and type-generation",
   "license": "UNLICENSED",
   "exports": {
     ".": "./src/index.ts",
-    "./client": "./src/client.ts",
-    "./types": "./src/types.ts"
+    "./client": "./src/client/index.ts",
+    "./queries": "./src/queries/index.ts",
+    "./schemas": "./src/schemas/index.ts",
+    "./adapters": "./src/adapters/index.ts",
+    "./types": "./src/types/index.ts",
+    "./type-generation": "./src/type-generation/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src/ --max-warnings 0"
+    "lint": "eslint src/ --max-warnings 0",
+    "typegen": "sanity typegen generate"
   },
   "dependencies": {
     "@prixtara/config": "workspace:*",
     "@prixtara/types": "workspace:*",
+    "@prixtara/validation": "workspace:*",
     "@sanity/client": "^6.28.0",
+    "@sanity/image-url": "^1.1.0",
+    "sanity": "^3.75.0",
     "server-only": "^0.0.1"
   },
   "devDependencies": {
