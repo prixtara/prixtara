@@ -21,6 +21,7 @@ export const serverEnvSchema = z.object({
   // Sanity CMS — server token (NEVER expose to client)
   SANITY_API_TOKEN: z.string().optional(),
   SANITY_WEBHOOK_SECRET: z.string().optional(),
+  SANITY_PREVIEW_SECRET: z.string().optional(),
 
   // Sentry — server-side error monitoring
   // TODO(monitoring): Mark required once Sentry project is created

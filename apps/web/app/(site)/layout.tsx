@@ -1,26 +1,55 @@
+import Link from 'next/link';
+import { getHeaderNavigation, getFooterNavigation } from '@/lib/server';
+import { routes } from '@/lib/routes';
+
 /**
  * (site) group layout.
  *
- * This layout wraps all marketing/site pages:
- * - Home, Products, Vision, Careers, About
- *
- * Route group (site) groups these routes without adding a URL segment.
- * A separate apps/studio layout handles the Sanity Studio.
- *
- * TODO(design): Add <Header /> navigation component.
- * TODO(design): Add <Footer /> component.
- * TODO(design): Add skip-to-content landmark for accessibility.
+ * Wraps all public-facing marketing routes.
+ * Content-driven navigation architecture wired via NavigationRepository.
+ * Visual freeze: semantic HTML structure only — no visual styling or components.
  */
 interface SiteLayoutProps {
   children: React.ReactNode;
 }
 
-export default function SiteLayout({ children }: SiteLayoutProps) {
+export default async function SiteLayout({ children }: SiteLayoutProps) {
+  const headerNav = await getHeaderNavigation();
+  const footerSections = await getFooterNavigation();
+
   return (
     <>
-      {/* TODO(design): <Header /> */}
+      <header>
+        <nav aria-label="Main Navigation">
+          <Link href={routes.home()}>Prixtara</Link>
+          <ul>
+            {headerNav.map((item) => (
+              <li key={item.id}>
+                <Link href={item.href}>{item.label}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+
       {children}
-      {/* TODO(design): <Footer /> */}
+
+      <footer>
+        <nav aria-label="Footer Navigation">
+          {footerSections.map((section) => (
+            <section key={section.id} aria-label={section.title}>
+              <h2>{section.title}</h2>
+              <ul>
+                {section.items.map((item) => (
+                  <li key={item.id}>
+                    <Link href={item.href}>{item.label}</Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </nav>
+      </footer>
     </>
   );
 }

@@ -1,29 +1,31 @@
 import type { Metadata } from 'next';
+import { getPageBySlug } from '@/lib/server';
+import { buildPageMetadata } from '@/lib/server/seo';
 
 /**
  * About page — /about
  *
- * Company story, team, and founding principles.
- *
- * TODO(cms): Fetch about page content from Sanity page document.
- * TODO(design): Implement about page layout with team section.
+ * Architecture:
+ *   - Fetches corporate and mission copy through PageRepository.
+ *   - Caching: Static generation (SSG).
+ *   - Visual freeze: semantic HTML placeholder shell only.
  */
-export const metadata: Metadata = {
-  title: 'About Us',
-  description: 'Learn about Prixtara Technologies — our story, team, and mission.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPageBySlug('about');
+  return buildPageMetadata(page, 'about');
+}
 
 export default async function AboutPage() {
-  // TODO(cms): const page = await getPageBySlug('about');
+  const page = await getPageBySlug('about');
 
   return (
     <main>
-      <h1>About Prixtara</h1>
-      <p>Architecture placeholder — about content coming from CMS.</p>
-      {/* TODO(design): Company story section */}
-      {/* TODO(design): Team / founders section */}
-      {/* TODO(design): Values and principles section */}
-      {/* TODO(design): Contact information */}
+      <h1>{page?.title ?? 'About Prixtara'}</h1>
+      <p>
+        {page?.description ??
+          'Prixtara Technologies develops pioneering deep-tech software solutions.'}
+      </p>
+      {page?.body && <p>{page.body}</p>}
     </main>
   );
 }

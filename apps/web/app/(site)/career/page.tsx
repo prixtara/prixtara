@@ -1,20 +1,23 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getActiveJobOpenings } from '@/lib/careers';
+import { getActiveJobOpenings } from '@/lib/server';
+import { routes } from '@/lib/routes';
+import { buildMetadata } from '@prixtara/seo';
 
 /**
  * Careers listing page — /career
  *
- * TODO(cms): Fetch job openings from Sanity.
- * TODO(careers): Implement job listing cards with department filters.
- * TODO(design): Implement careers page layout.
- * TODO(careers): Add application form or link to application platform.
+ * Architecture:
+ *   - Fetches active job openings through CareerRepository.
+ *   - Dynamic listing scales as new positions are published in CMS.
+ *   - Visual freeze: semantic HTML placeholder shell only.
  */
-export const metadata: Metadata = {
+export const metadata: Metadata = buildMetadata({
   title: 'Careers',
   description:
-    'Join Prixtara Technologies — open positions in deep-tech AI and language technology.',
-};
+    'Join Prixtara Technologies — engineering open positions in deep-tech AI and language intelligence.',
+  slug: 'career',
+});
 
 export default async function CareersPage() {
   const jobs = await getActiveJobOpenings();
@@ -22,8 +25,7 @@ export default async function CareersPage() {
   return (
     <main>
       <h1>Careers at Prixtara</h1>
-
-      {/* TODO(design): Careers hero / culture section */}
+      <p>Build foundational AI architectures and computer vision systems.</p>
 
       <section aria-label="Open positions">
         <h2>Open Positions</h2>
@@ -32,16 +34,19 @@ export default async function CareersPage() {
         ) : (
           <ul>
             {jobs.map((job) => (
-              <li key={job._id}>
-                <Link href={`/career/${job.slug.current}`}>{job.title}</Link>
-                <span> — {job.department}</span>
+              <li key={job.id}>
+                <Link href={routes.careerDetail(job.slug)}>
+                  <h3>{job.title}</h3>
+                </Link>
+                <p>
+                  {job.department} · {job.location} · {job.employmentType}
+                </p>
+                <p>{job.summary}</p>
               </li>
             ))}
           </ul>
         )}
       </section>
-
-      {/* TODO(design): General application / speculative CV section */}
     </main>
   );
 }
