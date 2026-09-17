@@ -8,6 +8,7 @@ export interface NormalizedPage {
   title: string;
   description?: string;
   body?: string;
+  data?: Record<string, unknown>;
   seo?: {
     title?: string;
     description?: string;

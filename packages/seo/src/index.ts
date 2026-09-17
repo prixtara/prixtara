@@ -9,5 +9,21 @@
  *   - Structured data helpers return plain objects — rendering is done in layout
  */
 export { defaultMetadata, buildMetadata } from './metadata';
-export { getOrganizationSchema, getWebsiteSchema } from './structured-data';
-export type {} from './metadata';
+export type { BuildMetadataOptions } from './metadata';
+
+export {
+  getOrganizationSchema,
+  getWebsiteSchema,
+  getProductSchema,
+  getJobPostingSchema,
+  formatJsonLd,
+} from './structured-data';
+
+export type {
+  OrganizationSchema,
+  WebsiteSchema,
+  ProductSchema,
+  ProductSchemaOptions,
+  JobPostingSchema,
+  JobPostingSchemaOptions,
+} from './structured-data';

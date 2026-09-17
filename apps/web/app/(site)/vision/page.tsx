@@ -1,31 +1,25 @@
 import type { Metadata } from 'next';
 import { getPageBySlug } from '@/lib/server';
 import { buildPageMetadata } from '@/lib/server/seo';
+import { VisionPage } from '@/components/pages';
 
 /**
- * Vision page — /vision
+ * Vision route — /vision
  *
  * Architecture:
  *   - Fetches marketing copy through PageRepository.
  *   - Caching: Static generation (SSG).
- *   - Visual freeze: semantic HTML placeholder shell only.
+ *   - Visual freeze: Delegates rendering to VisionPage architectural component.
  */
+export const revalidate = 86400;
+
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPageBySlug('vision');
   return buildPageMetadata(page, 'vision');
 }
 
-export default async function VisionPage() {
+export default async function Route() {
   const page = await getPageBySlug('vision');
 
-  return (
-    <main>
-      <h1>{page?.title ?? 'Our Vision'}</h1>
-      <p>
-        {page?.description ??
-          'Building foundational technologies that elevate industry and human communication.'}
-      </p>
-      {page?.body && <p>{page.body}</p>}
-    </main>
-  );
+  return <VisionPage page={page} />;
 }

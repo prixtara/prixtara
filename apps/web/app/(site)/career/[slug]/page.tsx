@@ -2,18 +2,21 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { getJobOpeningBySlug, getAllJobOpeningSlugs } from '@/lib/server';
 import { buildCareerMetadata } from '@/lib/server/seo';
+import { getJobPostingSchema, formatJsonLd } from '@prixtara/seo';
+import { JobDetailPage } from '@/components/pages';
 
 /**
- * Individual career / job posting page — /career/[slug]
+ * Individual career / job posting route — /career/[slug]
  *
  * Architecture:
  *   - CMS-driven dynamic route supporting arbitrary future job postings.
  *   - dynamicParams = true: allows on-demand ISR rendering for newly published postings.
  *   - generateStaticParams: pre-builds existing positions at build time.
- *   - Visual freeze: semantic HTML placeholder shell only.
+ *   - Visual freeze: Delegates rendering to JobDetailPage architectural component.
  */
 
 export const dynamicParams = true;
+export const revalidate = 3600;
 
 interface CareerPageProps {
   params: Promise<{ slug: string }>;
@@ -29,13 +32,16 @@ export async function generateMetadata({ params }: CareerPageProps): Promise<Met
   const job = await getJobOpeningBySlug(slug);
 
   if (!job) {
-    return { title: 'Position Not Found' };
+    return {
+      title: 'Position Not Found',
+      robots: { index: false, follow: false },
+    };
   }
 
   return buildCareerMetadata(job);
 }
 
-export default async function CareerDetailPage({ params }: CareerPageProps) {
+export default async function Route({ params }: CareerPageProps) {
   const { slug } = await params;
   const job = await getJobOpeningBySlug(slug);
 
@@ -43,29 +49,24 @@ export default async function CareerDetailPage({ params }: CareerPageProps) {
     notFound();
   }
 
+  const jobSchema = getJobPostingSchema({
+    title: job.title,
+    description: job.description || job.summary,
+    department: job.department,
+    location: job.location,
+    isRemote: job.isRemote,
+    employmentType: job.employmentType,
+    publishedAt: job.publishedAt,
+    slug: job.slug,
+  });
+
   return (
-    <main>
-      <article>
-        <header>
-          <h1>{job.title}</h1>
-          <p>
-            {job.department} · {job.location} · {job.employmentType}
-            {job.isRemote && ' (Remote Eligible)'}
-          </p>
-        </header>
-
-        <section aria-label="Role Summary">
-          <h2>Summary</h2>
-          <p>{job.summary}</p>
-        </section>
-
-        {job.description && (
-          <section aria-label="Job Description">
-            <h2>About the Role</h2>
-            <p>{job.description}</p>
-          </section>
-        )}
-      </article>
-    </main>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: formatJsonLd(jobSchema) }}
+      />
+      <JobDetailPage job={job} />
+    </>
   );
 }

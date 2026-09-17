@@ -1,7 +1,15 @@
+import 'server-only';
+
+import { sanityClient, isSanityConfigured, createNextFetchOptions } from '../client/sanityClient';
+import { CACHE_TAGS } from '../constants/cache-tags';
+import type { CmsHomepage } from '../types';
+import type { SanityClient } from '@sanity/client';
+
 /**
  * GROQ query for Homepage document with expanded polymorphic sections.
+ * Excludes unpublished drafts.
  */
-export const homepageQuery = `*[_type == "homepage"][0] {
+export const homepageQuery = `*[_type == "homepage" && !(_id in path("drafts.**"))][0] {
   _id,
   _type,
   title,
@@ -41,7 +49,7 @@ export const homepageQuery = `*[_type == "homepage"][0] {
         }
       },
       displayMode == "all" => {
-        "allProducts": *[_type == "product"] | order(_createdAt asc) {
+        "allProducts": *[_type == "product" && !(_id in path("drafts.**"))] | order(_createdAt asc) {
           _id,
           title,
           "slug": slug.current,
@@ -102,3 +110,25 @@ export const homepageQuery = `*[_type == "homepage"][0] {
     structuredData
   }
 }`;
+
+/**
+ * Fetch Homepage document from Sanity.
+ */
+export async function getHomepage(
+  client: SanityClient = sanityClient,
+): Promise<CmsHomepage | null> {
+  if (!isSanityConfigured()) {
+    return null;
+  }
+  try {
+    const homepage = await client.fetch<CmsHomepage | null>(
+      homepageQuery,
+      {},
+      createNextFetchOptions([CACHE_TAGS.homepage]),
+    );
+    return homepage ?? null;
+  } catch (error) {
+    console.warn('[getHomepage] CMS fetch failed:', error);
+    return null;
+  }
+}

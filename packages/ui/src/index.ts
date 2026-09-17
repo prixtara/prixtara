@@ -14,3 +14,5 @@
  * during the visual design phase. The current exports are architecture stubs.
  */
 export { Placeholder } from './components/placeholder';
+export * from './components/composition';
+export * from './accessibility';

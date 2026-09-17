@@ -1,12 +1,15 @@
 import 'server-only';
 
 import { sanityClient, isSanityConfigured, createNextFetchOptions } from '../client/sanityClient';
+import { CACHE_TAGS } from '../constants/cache-tags';
 import type { CmsProduct } from '../types';
+import type { SanityClient } from '@sanity/client';
 
 /**
  * GROQ query to retrieve all published products for listing and catalog pages.
+ * Excludes unpublished drafts.
  */
-export const allProductsQuery = `*[_type == "product"] | order(_createdAt asc) {
+export const allProductsQuery = `*[_type == "product" && !(_id in path("drafts.**"))] | order(_createdAt asc) {
   _id,
   _type,
   _createdAt,
@@ -41,7 +44,7 @@ export const allProductsQuery = `*[_type == "product"] | order(_createdAt asc) {
 /**
  * GROQ query to retrieve full product details for individual /products/[slug] pages.
  */
-export const productBySlugQuery = `*[_type == "product" && slug.current == $slug][0] {
+export const productBySlugQuery = `*[_type == "product" && !(_id in path("drafts.**")) && slug.current == $slug][0] {
   _id,
   _type,
   _createdAt,
@@ -162,20 +165,20 @@ export const productBySlugQuery = `*[_type == "product" && slug.current == $slug
 /**
  * Lightweight GROQ query for static path pre-generation.
  */
-export const allProductSlugsQuery = `*[_type == "product" && defined(slug.current)][].slug.current`;
+export const allProductSlugsQuery = `*[_type == "product" && !(_id in path("drafts.**")) && defined(slug.current)][].slug.current`;
 
 /**
  * Fetch all products from Sanity.
  */
-export async function getAllProducts(): Promise<CmsProduct[]> {
+export async function getAllProducts(client: SanityClient = sanityClient): Promise<CmsProduct[]> {
   if (!isSanityConfigured()) {
     return [];
   }
   try {
-    const products = await sanityClient.fetch<CmsProduct[]>(
+    const products = await client.fetch<CmsProduct[]>(
       allProductsQuery,
       {},
-      createNextFetchOptions(['products']),
+      createNextFetchOptions([CACHE_TAGS.products]),
     );
     return products || [];
   } catch (error) {
@@ -187,15 +190,18 @@ export async function getAllProducts(): Promise<CmsProduct[]> {
 /**
  * Fetch a single product by slug from Sanity.
  */
-export async function getProductBySlug(slug: string): Promise<CmsProduct | null> {
+export async function getProductBySlug(
+  slug: string,
+  client: SanityClient = sanityClient,
+): Promise<CmsProduct | null> {
   if (!isSanityConfigured()) {
     return null;
   }
   try {
-    const product = await sanityClient.fetch<CmsProduct | null>(
+    const product = await client.fetch<CmsProduct | null>(
       productBySlugQuery,
       { slug },
-      createNextFetchOptions([`product:${slug}`]),
+      createNextFetchOptions([CACHE_TAGS.products, CACHE_TAGS.product(slug)]),
     );
     return product;
   } catch (error) {
@@ -207,15 +213,15 @@ export async function getProductBySlug(slug: string): Promise<CmsProduct | null>
 /**
  * Fetch all published product slugs for generateStaticParams.
  */
-export async function getAllProductSlugs(): Promise<string[]> {
+export async function getAllProductSlugs(client: SanityClient = sanityClient): Promise<string[]> {
   if (!isSanityConfigured()) {
     return [];
   }
   try {
-    const slugs = await sanityClient.fetch<string[]>(
+    const slugs = await client.fetch<string[]>(
       allProductSlugsQuery,
       {},
-      createNextFetchOptions(['products']),
+      createNextFetchOptions([CACHE_TAGS.products]),
     );
     return slugs || [];
   } catch (error) {

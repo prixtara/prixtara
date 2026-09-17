@@ -1,48 +1,82 @@
 /**
  * @prixtara/media
  *
- * Media pipeline utilities.
+ * Media pipeline utilities and provider-agnostic abstraction layer.
+ * Decouples presentation components from underlying storage, CMS, and video CDNs:
  *
- * ┌─────────────────────────────────────────────────────────────────┐
- * │  TODO(media): Implement this package                            │
- * │                                                                 │
- * │  Planned capabilities:                                          │
- * │    1. Sanity image URL builder (@sanity/image-url)              │
- * │       - Responsive srcSet generation                            │
- * │       - Hotspot-aware cropping                                  │
- * │       - WebP / AVIF format negotiation                          │
- * │    2. Next.js Image component wrapper                           │
- * │       - Enforces alt text                                       │
- * │       - Standardises sizes prop                                 │
- * │    3. Video asset utilities                                     │
- * │       - Hero video optimisation (for prixtara-hero-video.mp4)  │
- * │       - Poster frame generation                                 │
- * │    4. OG image generation (via @vercel/og)                     │
- * │                                                                 │
- * │  Source assets are in: source-of-info/                         │
- * │    - prixtara-hero-video.mp4                                    │
- * │    - product-1.png (AI-Vision)                                  │
- * │    - product-2.png (Existential AI)                             │
- * │    - product-3.png (Sambhashi)                                  │
- * └─────────────────────────────────────────────────────────────────┘
+ * CMS / Storage
+ *   → media reference
+ *   → media abstraction (@prixtara/media)
+ *   → page / component
+ *
+ * Components consume normalized media objects rather than hardcoded file paths.
  */
 
+import { mediaService } from './providers/registry';
+import type {
+  ImageSourceInput,
+  ImageTransformOptions,
+  NormalizedImage,
+  NormalizedVideo,
+  VideoIntent,
+  VideoSourceInput,
+} from './types';
+
+// Re-export all submodules
+export * from './types';
+export * from './constants';
+export * from './image';
+export * from './video';
+export * from './providers';
+
 /**
- * Placeholder for future Sanity image URL builder.
- *
- * TODO(media): Replace with @sanity/image-url builder.
+ * Top-level convenience facade to resolve an image source input into a NormalizedImage.
  */
-export function getSanityImageUrl(_ref: string, _width?: number): string {
-  // TODO(media): Implement with @sanity/image-url
-  return '';
+export function resolveImage(
+  source: ImageSourceInput,
+  options?: ImageTransformOptions,
+): NormalizedImage {
+  return mediaService.resolveImage(source, options);
 }
 
 /**
- * Placeholder for video poster URL.
- *
- * TODO(media): Implement video poster extraction/generation.
+ * Top-level convenience facade to resolve a video source input into a NormalizedVideo.
  */
-export function getVideoPosterUrl(_videoRef: string): string {
-  // TODO(media): Implement poster frame generation
-  return '';
+export function resolveVideo(
+  source: VideoSourceInput,
+  intent?: Partial<VideoIntent>,
+): NormalizedVideo {
+  return mediaService.resolveVideo(source, intent);
+}
+
+/**
+ * Top-level convenience facade to obtain a direct image URL.
+ */
+export function getImageUrl(source: ImageSourceInput, options?: ImageTransformOptions): string {
+  return mediaService.getImageUrl(source, options);
+}
+
+/**
+ * Top-level convenience facade to obtain a video playback URL.
+ */
+export function getVideoPlaybackUrl(source: VideoSourceInput): string {
+  return mediaService.getVideoPlaybackUrl(source);
+}
+
+/**
+ * Backwards-compatible helper for Sanity image URL generation.
+ */
+export function getSanityImageUrl(ref: string, width?: number): string {
+  if (!ref) return '';
+  const sanityProvider = mediaService.getImageProvider('sanity-image');
+  return sanityProvider.getImageUrl(ref, width ? { width } : undefined);
+}
+
+/**
+ * Backwards-compatible helper for video poster URL resolution.
+ */
+export function getVideoPosterUrl(videoRef: string): string {
+  if (!videoRef) return '';
+  const videoProvider = mediaService.getVideoProvider();
+  return videoProvider.getPosterUrl?.(videoRef) ?? '';
 }

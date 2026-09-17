@@ -7,7 +7,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./server": "./src/env.server.ts",
-    "./client": "./src/env.client.ts"
+    "./client": "./src/env.client.ts",
+    "./tokens": "./src/tokens/index.ts"
   },
   "scripts": {
     "typecheck": "tsc --noEmit",

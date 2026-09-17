@@ -1,11 +1,15 @@
 import 'server-only';
 
 import { sanityClient, isSanityConfigured, createNextFetchOptions } from '../client/sanityClient';
+import { CACHE_TAGS } from '../constants/cache-tags';
+import type { CmsAboutPage } from '../types';
+import type { SanityClient } from '@sanity/client';
 
 /**
  * GROQ query for About Page singleton document.
+ * Excludes unpublished drafts.
  */
-export const aboutPageQuery = `*[_type == "aboutPage"][0] {
+export const aboutPageQuery = `*[_type == "aboutPage" && !(_id in path("drafts.**"))][0] {
   _id,
   _type,
   title,
@@ -48,12 +52,18 @@ export const aboutPageQuery = `*[_type == "aboutPage"][0] {
   }
 }`;
 
-export async function getAboutPage(): Promise<Record<string, unknown> | null> {
+export async function getAboutPage(
+  client: SanityClient = sanityClient,
+): Promise<CmsAboutPage | null> {
   if (!isSanityConfigured()) {
     return null;
   }
   try {
-    return await sanityClient.fetch(aboutPageQuery, {}, createNextFetchOptions(['about']));
+    return await client.fetch<CmsAboutPage | null>(
+      aboutPageQuery,
+      {},
+      createNextFetchOptions([CACHE_TAGS.about]),
+    );
   } catch (error) {
     console.warn('[getAboutPage] CMS fetch failed:', error);
     return null;

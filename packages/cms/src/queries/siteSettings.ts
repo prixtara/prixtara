@@ -1,7 +1,15 @@
+import 'server-only';
+
+import { sanityClient, isSanityConfigured, createNextFetchOptions } from '../client/sanityClient';
+import { CACHE_TAGS } from '../constants/cache-tags';
+import type { CmsSiteSettings } from '../types';
+import type { SanityClient } from '@sanity/client';
+
 /**
  * GROQ query for Site Settings document.
+ * Excludes unpublished drafts.
  */
-export const siteSettingsQuery = `*[_type == "siteSettings"][0] {
+export const siteSettingsQuery = `*[_type == "siteSettings" && !(_id in path("drafts.**"))][0] {
   _id,
   _type,
   companyName,
@@ -54,3 +62,25 @@ export const siteSettingsQuery = `*[_type == "siteSettings"][0] {
     }
   }
 }`;
+
+/**
+ * Fetch global Site Settings document from Sanity.
+ */
+export async function getSiteSettings(
+  client: SanityClient = sanityClient,
+): Promise<CmsSiteSettings | null> {
+  if (!isSanityConfigured()) {
+    return null;
+  }
+  try {
+    const settings = await client.fetch<CmsSiteSettings | null>(
+      siteSettingsQuery,
+      {},
+      createNextFetchOptions([CACHE_TAGS.siteSettings]),
+    );
+    return settings ?? null;
+  } catch (error) {
+    console.warn('[getSiteSettings] CMS fetch failed:', error);
+    return null;
+  }
+}

@@ -43,6 +43,44 @@ const nextConfig: NextConfig = {
   // Output for Vercel deployment (default, no change needed)
   // output: 'standalone', // Uncomment only if deploying in Docker
 
+  // Disable X-Powered-By header for information disclosure protection
+  poweredByHeader: false,
+
+  // HTTP Security Headers (OWASP recommendations)
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-DNS-Prefetch-Control',
+            value: 'on',
+          },
+          {
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), browsing-topics=()',
+          },
+        ],
+      },
+    ];
+  },
+
   // Experimental features
   experimental: {
     // TODO(monitoring): typedRoutes: true, — enable after all routes are defined

@@ -1,9 +1,9 @@
 import 'server-only';
 
-import { CmsProductRepository } from './cms-product-repository';
-import { CmsCareerRepository } from './cms-career-repository';
-import { CmsPageRepository } from './cms-page-repository';
-import { StaticNavigationRepository } from './static-navigation-repository';
+import { SanityProductRepository } from './sanity-product-repository';
+import { SanityCareerRepository } from './sanity-career-repository';
+import { SanityPageRepository } from './sanity-page-repository';
+import { SanityNavigationRepository } from './sanity-navigation-repository';
 import type {
   ProductRepository,
   CareerRepository,
@@ -12,16 +12,17 @@ import type {
 } from './interfaces';
 
 export * from './interfaces';
-export * from './cms-product-repository';
-export * from './cms-career-repository';
-export * from './cms-page-repository';
+export * from './sanity-product-repository';
+export * from './sanity-career-repository';
+export * from './sanity-page-repository';
+export * from './sanity-navigation-repository';
 export * from './static-navigation-repository';
 
 // Singleton instances for request processing
-let productRepo: ProductRepository = new CmsProductRepository();
-let careerRepo: CareerRepository = new CmsCareerRepository();
-let pageRepo: PageRepository = new CmsPageRepository();
-let navRepo: NavigationRepository = new StaticNavigationRepository();
+let productRepo: ProductRepository = new SanityProductRepository();
+let careerRepo: CareerRepository = new SanityCareerRepository();
+let pageRepo: PageRepository = new SanityPageRepository();
+let navRepo: NavigationRepository = new SanityNavigationRepository();
 
 export function getProductRepository(): ProductRepository {
   return productRepo;

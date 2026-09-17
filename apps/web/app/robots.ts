@@ -16,13 +16,10 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: '*',
         allow: '/',
-        disallow: [
-          '/api/',
-          // TODO(seo): Disallow draft/preview routes when implemented
-          // '/draft-mode/',
-        ],
+        disallow: ['/api/', '/studio/', '/_next/'],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
+    host: siteUrl,
   };
 }

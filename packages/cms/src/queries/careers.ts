@@ -1,12 +1,15 @@
 import 'server-only';
 
 import { sanityClient, isSanityConfigured, createNextFetchOptions } from '../client/sanityClient';
+import { CACHE_TAGS } from '../constants/cache-tags';
 import type { CmsJobOpening } from '../types';
+import type { SanityClient } from '@sanity/client';
 
 /**
  * GROQ query for Careers overview singleton page.
+ * Excludes unpublished drafts.
  */
-export const careerPageQuery = `*[_type == "careerPage"][0] {
+export const careerPageQuery = `*[_type == "careerPage" && !(_id in path("drafts.**"))][0] {
   _id,
   _type,
   title,
@@ -44,8 +47,9 @@ export const careerPageQuery = `*[_type == "careerPage"][0] {
 
 /**
  * GROQ query for active published job openings.
+ * Excludes unpublished drafts.
  */
-export const activeJobOpeningsQuery = `*[_type == "jobPosting" && published == true] | order(publishedAt desc) {
+export const activeJobOpeningsQuery = `*[_type == "jobPosting" && !(_id in path("drafts.**")) && published == true] | order(publishedAt desc) {
   _id,
   _type,
   title,
@@ -61,8 +65,9 @@ export const activeJobOpeningsQuery = `*[_type == "jobPosting" && published == t
 
 /**
  * GROQ query for a single job opening by its slug.
+ * Excludes unpublished drafts.
  */
-export const jobOpeningBySlugQuery = `*[_type == "jobPosting" && slug.current == $slug][0] {
+export const jobOpeningBySlugQuery = `*[_type == "jobPosting" && !(_id in path("drafts.**")) && published == true && slug.current == $slug][0] {
   _id,
   _type,
   title,
@@ -96,30 +101,35 @@ export const jobOpeningBySlugQuery = `*[_type == "jobPosting" && slug.current ==
 
 /**
  * Lightweight query for job opening slugs for generateStaticParams.
+ * Excludes unpublished drafts.
  */
-export const allJobOpeningSlugsQuery = `*[_type == "jobPosting" && published == true && defined(slug.current)][].slug.current`;
+export const allJobOpeningSlugsQuery = `*[_type == "jobPosting" && !(_id in path("drafts.**")) && published == true && defined(slug.current)][].slug.current`;
 
-export async function getCareerPage(): Promise<Record<string, unknown> | null> {
+export async function getCareerPage(
+  client: SanityClient = sanityClient,
+): Promise<Record<string, unknown> | null> {
   if (!isSanityConfigured()) {
     return null;
   }
   try {
-    return await sanityClient.fetch(careerPageQuery, {}, createNextFetchOptions(['careers']));
+    return await client.fetch(careerPageQuery, {}, createNextFetchOptions([CACHE_TAGS.careers]));
   } catch (error) {
     console.warn('[getCareerPage] CMS fetch failed:', error);
     return null;
   }
 }
 
-export async function getActiveJobOpenings(): Promise<CmsJobOpening[]> {
+export async function getActiveJobOpenings(
+  client: SanityClient = sanityClient,
+): Promise<CmsJobOpening[]> {
   if (!isSanityConfigured()) {
     return [];
   }
   try {
-    const openings = await sanityClient.fetch<CmsJobOpening[]>(
+    const openings = await client.fetch<CmsJobOpening[]>(
       activeJobOpeningsQuery,
       {},
-      createNextFetchOptions(['careers', 'job-openings']),
+      createNextFetchOptions([CACHE_TAGS.jobs, CACHE_TAGS.careers]),
     );
     return openings || [];
   } catch (error) {
@@ -128,15 +138,18 @@ export async function getActiveJobOpenings(): Promise<CmsJobOpening[]> {
   }
 }
 
-export async function getJobOpeningBySlug(slug: string): Promise<CmsJobOpening | null> {
+export async function getJobOpeningBySlug(
+  slug: string,
+  client: SanityClient = sanityClient,
+): Promise<CmsJobOpening | null> {
   if (!isSanityConfigured()) {
     return null;
   }
   try {
-    return await sanityClient.fetch<CmsJobOpening | null>(
+    return await client.fetch<CmsJobOpening | null>(
       jobOpeningBySlugQuery,
       { slug },
-      createNextFetchOptions([`job-opening:${slug}`]),
+      createNextFetchOptions([CACHE_TAGS.jobs, CACHE_TAGS.job(slug)]),
     );
   } catch (error) {
     console.warn(`[getJobOpeningBySlug] CMS fetch failed for slug "${slug}":`, error);
@@ -144,15 +157,17 @@ export async function getJobOpeningBySlug(slug: string): Promise<CmsJobOpening |
   }
 }
 
-export async function getAllJobOpeningSlugs(): Promise<string[]> {
+export async function getAllJobOpeningSlugs(
+  client: SanityClient = sanityClient,
+): Promise<string[]> {
   if (!isSanityConfigured()) {
     return [];
   }
   try {
-    const slugs = await sanityClient.fetch<string[]>(
+    const slugs = await client.fetch<string[]>(
       allJobOpeningSlugsQuery,
       {},
-      createNextFetchOptions(['job-openings']),
+      createNextFetchOptions([CACHE_TAGS.jobs]),
     );
     return slugs || [];
   } catch (error) {

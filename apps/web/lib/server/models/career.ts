@@ -14,8 +14,17 @@ export interface NormalizedJobOpening {
   employmentType: string;
   summary: string;
   description?: string;
+  responsibilities?: string[];
+  requirements?: string[];
+  optionalRequirements?: string[];
   isActive: boolean;
   publishedAt: string;
+  applicationCta?: {
+    type: 'email' | 'url';
+    destination: string;
+    buttonText: string;
+    instructions?: string;
+  };
   seo?: {
     title?: string;
     description?: string;

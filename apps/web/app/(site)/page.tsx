@@ -1,17 +1,14 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 import { getFeaturedProducts } from '@/lib/server';
-import { routes } from '@/lib/routes';
 import { buildMetadata } from '@prixtara/seo';
+import { HomePage } from '@/components/pages';
 
 /**
- * Homepage — /
+ * Homepage Route — /
  *
  * Architecture: Server Component.
- * Content flow:
- *   1. Data access through ProductRepository via @/lib/server.
- *   2. Decoupled from CMS implementation.
- *   3. Visual freeze: semantic HTML placeholder shell only.
+ * Data flow: ProductRepository via @/lib/server.
+ * Visual freeze: Delegates rendering to HomePage architectural component.
  */
 
 export const metadata: Metadata = buildMetadata({
@@ -21,37 +18,10 @@ export const metadata: Metadata = buildMetadata({
   slug: '',
 });
 
-export default async function HomePage() {
+export const revalidate = 3600;
+
+export default async function Route() {
   const featuredProducts = await getFeaturedProducts();
 
-  return (
-    <main>
-      <section aria-label="Hero">
-        <h1>Prixtara Technologies</h1>
-        <p>Deep-tech solutions for a smarter world.</p>
-        <nav aria-label="Quick links">
-          <Link href={routes.products()}>Explore Products</Link>
-          <Link href={routes.vision()}>Our Vision</Link>
-        </nav>
-      </section>
-
-      <section aria-label="Featured Products">
-        <h2>Featured Products</h2>
-        {featuredProducts.length === 0 ? (
-          <p>Product catalog in preparation.</p>
-        ) : (
-          <ul>
-            {featuredProducts.map((product) => (
-              <li key={product.id}>
-                <Link href={routes.product(product.slug)}>
-                  <h3>{product.name}</h3>
-                </Link>
-                <p>{product.tagline}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </main>
-  );
+  return <HomePage featuredProducts={featuredProducts} />;
 }

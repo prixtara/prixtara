@@ -14,7 +14,7 @@ export const metadata: Metadata = {
  */
 export default function SiteNotFound() {
   return (
-    <main>
+    <main id="main-content" tabIndex={-1}>
       <h1>Page Not Found</h1>
       <p>The requested page does not exist or has been moved.</p>
       <Link href={routes.home()}>Return to homepage</Link>

@@ -1,31 +1,25 @@
 import type { Metadata } from 'next';
 import { getPageBySlug } from '@/lib/server';
 import { buildPageMetadata } from '@/lib/server/seo';
+import { AboutPage } from '@/components/pages';
 
 /**
- * About page — /about
+ * About route — /about
  *
  * Architecture:
  *   - Fetches corporate and mission copy through PageRepository.
  *   - Caching: Static generation (SSG).
- *   - Visual freeze: semantic HTML placeholder shell only.
+ *   - Visual freeze: Delegates rendering to AboutPage architectural component.
  */
+export const revalidate = 86400;
+
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPageBySlug('about');
   return buildPageMetadata(page, 'about');
 }
 
-export default async function AboutPage() {
+export default async function Route() {
   const page = await getPageBySlug('about');
 
-  return (
-    <main>
-      <h1>{page?.title ?? 'About Prixtara'}</h1>
-      <p>
-        {page?.description ??
-          'Prixtara Technologies develops pioneering deep-tech software solutions.'}
-      </p>
-      {page?.body && <p>{page.body}</p>}
-    </main>
-  );
+  return <AboutPage page={page} />;
 }

@@ -1,16 +1,15 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
-import { getActiveJobOpenings } from '@/lib/server';
-import { routes } from '@/lib/routes';
+import { getActiveJobOpenings, getPageBySlug } from '@/lib/server';
 import { buildMetadata } from '@prixtara/seo';
+import { CareerPage } from '@/components/pages';
 
 /**
- * Careers listing page — /career
+ * Careers listing route — /career
  *
  * Architecture:
  *   - Fetches active job openings through CareerRepository.
  *   - Dynamic listing scales as new positions are published in CMS.
- *   - Visual freeze: semantic HTML placeholder shell only.
+ *   - Visual freeze: Delegates rendering to CareerPage architectural component.
  */
 export const metadata: Metadata = buildMetadata({
   title: 'Careers',
@@ -19,34 +18,13 @@ export const metadata: Metadata = buildMetadata({
   slug: 'career',
 });
 
-export default async function CareersPage() {
-  const jobs = await getActiveJobOpenings();
+export const revalidate = 3600;
 
-  return (
-    <main>
-      <h1>Careers at Prixtara</h1>
-      <p>Build foundational AI architectures and computer vision systems.</p>
+export default async function Route() {
+  const [jobs, page] = await Promise.all([
+    getActiveJobOpenings(),
+    getPageBySlug('career'),
+  ]);
 
-      <section aria-label="Open positions">
-        <h2>Open Positions</h2>
-        {jobs.length === 0 ? (
-          <p>No open positions at this time. Check back soon.</p>
-        ) : (
-          <ul>
-            {jobs.map((job) => (
-              <li key={job.id}>
-                <Link href={routes.careerDetail(job.slug)}>
-                  <h3>{job.title}</h3>
-                </Link>
-                <p>
-                  {job.department} · {job.location} · {job.employmentType}
-                </p>
-                <p>{job.summary}</p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
-    </main>
-  );
+  return <CareerPage jobs={jobs} page={page} />;
 }
