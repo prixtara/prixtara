@@ -1,0 +1,21 @@
+{
+  "name": "@prixtara/eslint-config",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared ESLint flat configurations for the Prixtara monorepo",
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    "./base": "./base.js",
+    "./react-internal": "./react-internal.js"
+  },
+  "dependencies": {
+    "@eslint/js": "^9.27.0",
+    "globals": "^16.2.0",
+    "typescript-eslint": "^8.31.0"
+  },
+  "peerDependencies": {
+    "eslint": "^9.0.0",
+    "typescript": "^5.0.0"
+  }
+}
