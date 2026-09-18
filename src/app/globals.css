@@ -1,26 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #eeeff1;
+  --foreground: #0d121a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans), system-ui, sans-serif;
+  --font-display: var(--font-display), sans-serif;
+  --font-syne: var(--font-syne), sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #eeeff1;
+  color: #0d121a;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom chamfered hero camera frame on desktop */
+@media (min-width: 1024px) {
+  .hero-chamfer-box {
+    clip-path: url(#hero-chamfer);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Smooth custom capsule styling */
+.nav-capsule {
+  background: rgba(226, 230, 235, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Hide dev badge overlays in captures */
+nextjs-portal,
+#nextjs-dev-overlay,
+[data-nextjs-toast],
+[data-nextjs-dev-overlay] {
+  display: none !important;
 }
