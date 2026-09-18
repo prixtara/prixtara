@@ -34,10 +34,9 @@ body {
 
 /* Smooth custom capsule styling */
 .nav-capsule {
-  background: rgba(226, 230, 235, 0.6);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: #f7f9fa;
+  border: 1px solid rgba(80, 95, 110, 0.24);
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.04);
 }
 
 /* Hide dev badge overlays in captures */

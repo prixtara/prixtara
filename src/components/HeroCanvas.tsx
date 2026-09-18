@@ -16,28 +16,28 @@ export default function HeroCanvas() {
       {/* Calibrated to 1586x992 Reference Art Direction                            */}
       {/* ========================================================================= */}
       <div className="hidden xl:block relative w-full h-full min-h-[100dvh]">
-        {/* 1. Top Left Nav (left ≈ 1.0vw, top ≈ 1.1vh, w ≈ 24.2vw / 384px) */}
-        <div className="absolute left-[1.0vw] top-[1.1vh] z-30">
+        {/* 1. Top Left Nav (left ≈ 15px, top ≈ 11px, w ≈ 384px, h ≈ 58px) */}
+        <div className="absolute left-[15px] top-[11px] z-30">
           <TopLeftNav />
         </div>
 
-        {/* 2. Top Right Controls (right ≈ 1.0vw, top ≈ 1.1vh, w ≈ 23.7vw / 375px) */}
-        <div className="absolute right-[1.0vw] top-[1.1vh] z-30">
+        {/* 2. Top Right Controls (right ≈ 15px, top ≈ 11px, w ≈ 375px, h ≈ 58px) */}
+        <div className="absolute right-[15px] top-[11px] z-30">
           <TopRightControls />
         </div>
 
-        {/* 3. Central Hero Column (left ≈ 26.1vw, top ≈ 0.8vh, w ≈ 44.8vw, h ≈ 88.9vh) */}
-        <div className="absolute left-[26.1vw] top-[0.8vh] w-[44.8vw] h-[88.9vh] z-10">
+        {/* 3. Central Hero Column (left ≈ 26.1vw, top = 8px, bottom = 8px, h = calc(100dvh - 16px)) */}
+        <div className="absolute left-[26.1vw] top-[8px] w-[44.8vw] h-[calc(100dvh-16px)] z-10">
           <HeroMedia className="w-full h-full" />
         </div>
 
-        {/* 4. Left Content Column (left ≈ 2.4vw, top ≈ 22.8vh, w ≈ 370px) */}
-        <div className="absolute left-[2.4vw] top-[22.8vh] w-[clamp(345px,22.5vw,375px)] z-20">
+        {/* 4. Left Content Column (left ≈ 2.4vw, top ≈ 21.5vh, w ≈ clamp(360px,23.5vw,400px)) */}
+        <div className="absolute left-[2.4vw] top-[21.5vh] w-[clamp(360px,23.5vw,400px)] z-20">
           <HeroCopy />
         </div>
 
-        {/* 5. Bottom Left Info Block (left ≈ 2.4vw, top ≈ 79.1vh, w ≈ 350px) */}
-        <div className="absolute left-[2.4vw] top-[79.1vh] w-[clamp(330px,21.5vw,360px)] z-20">
+        {/* 5. Bottom Left Info Block (left ≈ 2.4vw, top ≈ 79.5vh, w ≈ 350px) */}
+        <div className="absolute left-[2.4vw] top-[79.5vh] w-[clamp(330px,21.5vw,360px)] z-20">
           <IntroStatement />
         </div>
 
@@ -46,8 +46,8 @@ export default function HeroCanvas() {
           <FeatureCardGroup />
         </div>
 
-        {/* 7. Bottom Right Story Navigation (right ≈ 4.5vw, top ≈ 85vh) */}
-        <div className="absolute right-[4.5vw] top-[85vh] z-20">
+        {/* 7. Bottom Right Story Navigation (right ≈ 4.5vw, top ≈ 86vh) */}
+        <div className="absolute right-[4.5vw] top-[86vh] z-20">
           <StoryNavigation />
         </div>
       </div>

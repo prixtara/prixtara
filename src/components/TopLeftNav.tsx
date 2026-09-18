@@ -21,7 +21,7 @@ export default function TopLeftNav({ className = "" }: TopLeftNavProps) {
     <header className={`shrink-0 z-30 select-none ${className}`}>
       <nav
         aria-label="Main Navigation"
-        className="inline-flex items-center justify-between w-[384px] max-w-[calc(100vw-30px)] h-[58px] p-1.5 rounded-full nav-capsule shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+        className="inline-flex items-center justify-between w-[384px] max-w-[calc(100vw-30px)] h-[58px] p-1.5 rounded-full nav-capsule"
       >
         {NAV_ITEMS.map((item) => {
           const isActive = activeTab === item.name;
@@ -30,10 +30,10 @@ export default function TopLeftNav({ className = "" }: TopLeftNavProps) {
               key={item.name}
               href={item.href}
               onClick={() => setActiveTab(item.name)}
-              className={`relative flex items-center justify-center h-full px-5 rounded-full text-[12.5px] transition-all duration-200 whitespace-nowrap ${
+              className={`relative flex items-center justify-center h-[46px] px-5 rounded-full text-[13px] transition-all duration-200 whitespace-nowrap ${
                 isActive
-                  ? "bg-white text-[#0d121a] font-bold shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
-                  : "text-[#3e4856] hover:text-black font-semibold hover:bg-black/[0.02]"
+                  ? "bg-white text-[#0a0e17] font-bold shadow-[0_1px_3px_rgba(15,23,42,0.10),0_0_0_1px_rgba(80,95,110,0.12)]"
+                  : "text-[#323d4c] hover:text-[#0a0e17] font-semibold hover:bg-black/[0.03]"
               }`}
             >
               {item.name}
