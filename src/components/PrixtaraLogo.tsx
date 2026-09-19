@@ -9,7 +9,7 @@ interface PrixtaraLogoProps {
 }
 
 export default function PrixtaraLogo({
-  className = "w-[335px] xl:w-[342px] h-auto",
+  className = "w-[348px] xl:w-[384px] h-auto",
 }: PrixtaraLogoProps) {
   return (
     <div className={`inline-flex items-center select-none ${className}`}>

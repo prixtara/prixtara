@@ -25,10 +25,10 @@ export default function StoryNavigation({ className = "" }: StoryNavigationProps
         <Link
           key={link.label}
           href={link.href}
-          className="group flex items-center gap-1.5 text-[11px] xl:text-[11.5px] font-extrabold tracking-[0.14em] text-[#0d121a] uppercase hover:text-black transition-colors whitespace-nowrap"
+          className="group flex items-center gap-1.5 text-[11.5px] xl:text-[12px] font-bold tracking-[0.14em] text-[#0a0e17] uppercase hover:text-black transition-colors whitespace-nowrap"
         >
           <span>{link.label}</span>
-          <ArrowRight className="w-3.5 h-3.5 stroke-[2.4] transition-transform duration-200 group-hover:translate-x-0.5" />
+          <ArrowRight className="w-3.5 h-3.5 stroke-[2.2] transition-transform duration-200 group-hover:translate-x-0.5" />
         </Link>
       ))}
     </motion.nav>

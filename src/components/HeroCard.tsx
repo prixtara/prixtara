@@ -38,10 +38,10 @@ export default function HeroCard({
       {/* Card Info Bottom Row */}
       <div className="pt-2 pb-0.5 px-1 flex items-center justify-between gap-2">
         <div className="flex flex-col min-w-0 pr-1">
-          <h3 className="text-[13px] font-extrabold tracking-wider text-[#0d121a] uppercase leading-tight font-sans truncate">
+          <h3 className="text-[13.5px] xl:text-[14px] font-extrabold tracking-[0.06em] text-[#0a0e17] uppercase leading-tight font-sans truncate">
             {title}
           </h3>
-          <p className="text-[10px] text-slate-500 font-normal mt-0.5 whitespace-nowrap">
+          <p className="text-[10.5px] xl:text-[11px] text-[#424e60] font-medium mt-0.5 whitespace-nowrap">
             {subtitle}
           </p>
         </div>
