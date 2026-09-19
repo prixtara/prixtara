@@ -10,7 +10,7 @@ import StoryNavigation from "./StoryNavigation";
 
 export default function HeroCanvas() {
   return (
-    <main className="relative w-full min-h-[100dvh] xl:h-[100dvh] overflow-x-hidden xl:overflow-hidden bg-[#eeeff1] text-[#0d121a] select-none">
+    <section id="hero" className="relative w-full min-h-[100dvh] xl:h-[100dvh] overflow-x-hidden xl:overflow-hidden bg-[#eeeff1] text-[#0d121a] select-none">
       {/* ========================================================================= */}
       {/* DESKTOP ART-DIRECTED FULL-VIEWPORT CANVAS (min-width: 1280px)            */}
       {/* Calibrated to 1586x992 Reference Art Direction                            */}
@@ -84,6 +84,6 @@ export default function HeroCanvas() {
           <StoryNavigation />
         </div>
       </div>
-    </main>
+    </section>
   );
 }

@@ -41,7 +41,6 @@ export default function ProductFeaturePanel({
         alt="Automated visual inspection line powered by Prixtara AI Vision"
         fill
         sizes="(max-width: 1024px) 100vw, 62vw"
-        priority
         className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-[1.02]"
       />
 
