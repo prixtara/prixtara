@@ -8,10 +8,11 @@ import IntelligenceFlow from "./IntelligenceFlow";
 export default function HowPrixtaraThinksSection() {
   return (
     <section
-      id="how-prixtara-thinks"
+      id="technology"
       aria-label="How Prixtara Thinks — From Data to Action"
-      className="relative w-full bg-[#0b1420] overflow-hidden text-white border-t border-white/[0.06] select-none"
+      className="relative w-full bg-[#0b1420] overflow-hidden text-white border-t border-white/[0.06] select-none scroll-mt-6"
     >
+      <span id="how-prixtara-thinks" className="sr-only" />
       {/* Subtle tonal gradient background for depth */}
       <div
         className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(16,27,40,0.8)_0%,rgba(11,20,32,1)_80%)] pointer-events-none"

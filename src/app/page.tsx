@@ -5,17 +5,27 @@ import ProductExpressionsSection from "@/components/ProductExpressionsSection";
 import WhyPrixtaraSection from "@/components/WhyPrixtaraSection";
 import HowPrixtaraThinksSection from "@/components/HowPrixtaraThinksSection";
 import RealOutcomesSection from "@/components/RealOutcomesSection";
+import ProofAndMomentumSection from "@/components/ProofAndMomentumSection";
+import PeopleAndFutureSection from "@/components/PeopleAndFutureSection";
+import FinalCTASection from "@/components/FinalCTASection";
+import SiteFooter from "@/components/SiteFooter";
 
 export default function Home() {
   return (
     <>
-      <HeroCanvas />
-      <TrustedBySection />
-      <RealitySection />
-      <ProductExpressionsSection />
-      <WhyPrixtaraSection />
-      <HowPrixtaraThinksSection />
-      <RealOutcomesSection />
+      <main id="main-content">
+        <HeroCanvas />
+        <TrustedBySection />
+        <RealitySection />
+        <ProductExpressionsSection />
+        <WhyPrixtaraSection />
+        <HowPrixtaraThinksSection />
+        <RealOutcomesSection />
+        <ProofAndMomentumSection />
+        <PeopleAndFutureSection />
+        <FinalCTASection />
+      </main>
+      <SiteFooter />
     </>
   );
 }
